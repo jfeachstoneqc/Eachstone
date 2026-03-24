@@ -54,7 +54,13 @@ const statusColumns: JobStatus[] = [
 
 const initialState: JobActionState = { success: false, error: null };
 
-export function JobsView({ initialJobs }: { initialJobs: JobRow[] }) {
+export function JobsView({
+  initialJobs,
+  clients,
+}: {
+  initialJobs: JobRow[];
+  clients: { id: string; name: string }[];
+}) {
   const router = useRouter();
   const [view, setView] = useState<"kanban" | "list">("kanban");
   const [open, setOpen] = useState(false);
@@ -106,12 +112,19 @@ export function JobsView({ initialJobs }: { initialJobs: JobRow[] }) {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="client_name">Nom du client</Label>
-                  <Input
-                    id="client_name"
-                    name="client_name"
-                    placeholder="Nom du client"
-                  />
+                  <Label htmlFor="client_id">Client</Label>
+                  <Select name="client_id">
+                    <SelectTrigger id="client_id">
+                      <SelectValue placeholder="Sélectionner un client" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {clients.map((c) => (
+                        <SelectItem key={c.id} value={c.id}>
+                          {c.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="address">Adresse</Label>

@@ -11,12 +11,12 @@ export default async function CalculatorPage() {
   // Revenus et heures ce mois
   const { data: monthJobs } = await supabase
     .from("jobs")
-    .select("total_amount, hours_worked, payment_method")
+    .select("total_amount, actual_hours, payment_method")
     .eq("status", "completed")
     .gte("created_at", startOfMonth);
 
   const monthlyRevenue = (monthJobs ?? []).reduce((s, j) => s + (j.total_amount ?? 0), 0);
-  const monthlyHours = (monthJobs ?? []).reduce((s, j) => s + (j.hours_worked ?? 0), 0);
+  const monthlyHours = (monthJobs ?? []).reduce((s, j) => s + (j.actual_hours ?? 0), 0);
 
   // Dépenses ce mois (table optionnelle — graceful fallback)
   const { data: expensesData } = await supabase
@@ -29,14 +29,14 @@ export default async function CalculatorPage() {
   // Taux horaire moyen (sur l'année)
   const { data: yearJobs } = await supabase
     .from("jobs")
-    .select("total_amount, hours_worked")
+    .select("total_amount, actual_hours")
     .eq("status", "completed")
     .gte("created_at", startOfYear)
-    .not("hours_worked", "is", null)
-    .gt("hours_worked", 0);
+    .not("actual_hours", "is", null)
+    .gt("actual_hours", 0);
 
   const totalRevYear = (yearJobs ?? []).reduce((s, j) => s + (j.total_amount ?? 0), 0);
-  const totalHrsYear = (yearJobs ?? []).reduce((s, j) => s + (j.hours_worked ?? 0), 0);
+  const totalHrsYear = (yearJobs ?? []).reduce((s, j) => s + (j.actual_hours ?? 0), 0);
   const avgHourlyRate = totalHrsYear > 0 ? totalRevYear / totalHrsYear : 0;
 
   // Nombre de jobs complétés ce mois

@@ -1,0 +1,2 @@
+-- Pas de données de démonstration.
+-- Les services sont insérés dans la migration 001_initial_schema.sql.

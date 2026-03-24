@@ -138,5 +138,4 @@ export const SERVICE_AREAS = [
   "Sainte-Marthe-du-Cap",
   "Pointe-du-Lac",
   "Saint-Louis-de-France",
-  "Bécancour",
 ];
