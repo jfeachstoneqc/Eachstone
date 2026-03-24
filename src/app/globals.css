@@ -141,7 +141,7 @@
   }
 }
 
-/* ── Page background — textured off-white with bold gradient blobs ────────── */
+/* ── Page background — textured off-white with gradient blobs ────────────── */
 .page-bg {
   position: relative;
   min-height: 100vh;
@@ -149,9 +149,6 @@
   background:
     radial-gradient(ellipse 80% 65% at 110% -5%, #c8d8ff 0%, transparent 55%),
     radial-gradient(ellipse 60% 55% at -10% 105%, #d0daf4 0%, transparent 50%),
-    radial-gradient(ellipse 55% 50% at 0%  0%,   #e4ecff 0%, transparent 48%),
-    radial-gradient(ellipse 45% 40% at 100% 100%, #ccd6ef 0%, transparent 48%),
-    radial-gradient(ellipse 35% 30% at 50%  50%,  #eef1fa 0%, transparent 55%),
     #f4f5fa;
 }
 
@@ -171,18 +168,17 @@
 
 /* ── Floating decorative blobs — slow ambient movement ───────────────────── */
 @keyframes float-blob {
-  0%,100% { transform: translate(0,0) scale(1); }
-  33%     { transform: translate(30px,-20px) scale(1.05); }
-  66%     { transform: translate(-15px,15px) scale(0.97); }
+  0%, 100% { transform: translate(0, 0); }
+  50%       { transform: translate(20px, -15px); }
 }
 .deco-blob {
   position: absolute;
   border-radius: 50%;
-  filter: blur(60px);
-  opacity: 0.30;
+  filter: blur(40px);
+  opacity: 0.25;
   pointer-events: none;
   z-index: -1;
-  animation: float-blob 18s ease-in-out infinite;
+  animation: float-blob 20s ease-in-out infinite;
   will-change: transform;
 }
 .deco-blob-1 {
@@ -206,8 +202,8 @@
 
 /* ── Hero floating shapes ──────────────────────────────────────────────── */
 @keyframes hero-float {
-  0%, 100% { transform: translateY(0) scale(1); }
-  50%      { transform: translateY(-18px) scale(1.02); }
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-14px); }
 }
 
 /* ── Marquee ticker ──────────────────────────────────────────────────────── */
@@ -229,16 +225,16 @@
 /* Base glass — nav, subtle overlays */
 .glass {
   background: rgba(255,255,255,0.72);
-  backdrop-filter: blur(12px) saturate(140%);
-  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  backdrop-filter: blur(8px) saturate(130%);
+  -webkit-backdrop-filter: blur(8px) saturate(130%);
   border: 1px solid rgba(255,255,255,0.80);
 }
 
 /* Standard glass card — workhorse */
 .glass-card {
   background: rgba(255,255,255,0.80);
-  backdrop-filter: blur(14px) saturate(150%);
-  -webkit-backdrop-filter: blur(14px) saturate(150%);
+  backdrop-filter: blur(10px) saturate(140%);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
   border: 1px solid rgba(255,255,255,0.88);
   box-shadow:
     0 1px 0 rgba(255,255,255,0.95) inset,
@@ -249,8 +245,8 @@
 /* Heavy glass — info panels, prominent cards */
 .glass-strong {
   background: rgba(255,255,255,0.88);
-  backdrop-filter: blur(16px) saturate(160%);
-  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  backdrop-filter: blur(12px) saturate(150%);
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
   border: 1px solid rgba(255,255,255,0.95);
   box-shadow:
     0 1px 0 rgba(255,255,255,1) inset,
@@ -261,8 +257,8 @@
 /* Lapis-tinted glass */
 .glass-copper {
   background: rgba(37,70,189,0.06);
-  backdrop-filter: blur(12px) saturate(140%);
-  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  backdrop-filter: blur(8px) saturate(130%);
+  -webkit-backdrop-filter: blur(8px) saturate(130%);
   border: 1px solid rgba(37,70,189,0.20);
   box-shadow: 0 4px 24px rgba(37,70,189,0.08);
 }
@@ -293,8 +289,8 @@
 /* ── Scroll-reveal ───────────────────────────────────────────────────────── */
 .reveal {
   opacity: 0;
-  transform: translateY(32px);
-  transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1);
+  transform: translateY(24px);
+  transition: opacity 0.55s cubic-bezier(0.16,1,0.3,1), transform 0.55s cubic-bezier(0.16,1,0.3,1);
 }
 .reveal.revealed {
   opacity: 1;
@@ -304,27 +300,27 @@
 /* Stagger children inside a reveal container */
 .reveal-stagger > * {
   opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.5s cubic-bezier(0.16,1,0.3,1), transform 0.5s cubic-bezier(0.16,1,0.3,1);
+  transform: translateY(16px);
+  transition: opacity 0.45s cubic-bezier(0.16,1,0.3,1), transform 0.45s cubic-bezier(0.16,1,0.3,1);
 }
 .reveal-stagger.revealed > *:nth-child(1) { transition-delay: 0s;    opacity: 1; transform: translateY(0); }
-.reveal-stagger.revealed > *:nth-child(2) { transition-delay: 0.08s; opacity: 1; transform: translateY(0); }
-.reveal-stagger.revealed > *:nth-child(3) { transition-delay: 0.16s; opacity: 1; transform: translateY(0); }
-.reveal-stagger.revealed > *:nth-child(4) { transition-delay: 0.24s; opacity: 1; transform: translateY(0); }
-.reveal-stagger.revealed > *:nth-child(5) { transition-delay: 0.32s; opacity: 1; transform: translateY(0); }
-.reveal-stagger.revealed > *:nth-child(6) { transition-delay: 0.40s; opacity: 1; transform: translateY(0); }
-.reveal-stagger.revealed > *:nth-child(7) { transition-delay: 0.48s; opacity: 1; transform: translateY(0); }
+.reveal-stagger.revealed > *:nth-child(2) { transition-delay: 0.06s; opacity: 1; transform: translateY(0); }
+.reveal-stagger.revealed > *:nth-child(3) { transition-delay: 0.12s; opacity: 1; transform: translateY(0); }
+.reveal-stagger.revealed > *:nth-child(4) { transition-delay: 0.18s; opacity: 1; transform: translateY(0); }
+.reveal-stagger.revealed > *:nth-child(5) { transition-delay: 0.24s; opacity: 1; transform: translateY(0); }
+.reveal-stagger.revealed > *:nth-child(6) { transition-delay: 0.30s; opacity: 1; transform: translateY(0); }
+.reveal-stagger.revealed > *:nth-child(7) { transition-delay: 0.36s; opacity: 1; transform: translateY(0); }
 
 /* ── Hero stagger — plays on load ────────────────────────────────────────── */
 @keyframes hero-in {
   from { opacity: 0; transform: translateY(30px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-.hero-stagger > *:nth-child(1) { animation: hero-in 0.7s 0.1s  cubic-bezier(0.16,1,0.3,1) both; }
-.hero-stagger > *:nth-child(2) { animation: hero-in 0.7s 0.25s cubic-bezier(0.16,1,0.3,1) both; }
-.hero-stagger > *:nth-child(3) { animation: hero-in 0.7s 0.4s  cubic-bezier(0.16,1,0.3,1) both; }
-.hero-stagger > *:nth-child(4) { animation: hero-in 0.7s 0.55s cubic-bezier(0.16,1,0.3,1) both; }
-.hero-stagger > *:nth-child(5) { animation: hero-in 0.7s 0.65s cubic-bezier(0.16,1,0.3,1) both; }
+.hero-stagger > *:nth-child(1) { animation: hero-in 0.6s 0.05s cubic-bezier(0.16,1,0.3,1) both; }
+.hero-stagger > *:nth-child(2) { animation: hero-in 0.6s 0.15s cubic-bezier(0.16,1,0.3,1) both; }
+.hero-stagger > *:nth-child(3) { animation: hero-in 0.6s 0.25s cubic-bezier(0.16,1,0.3,1) both; }
+.hero-stagger > *:nth-child(4) { animation: hero-in 0.6s 0.35s cubic-bezier(0.16,1,0.3,1) both; }
+.hero-stagger > *:nth-child(5) { animation: hero-in 0.6s 0.45s cubic-bezier(0.16,1,0.3,1) both; }
 
 /* ── Card shimmer on hover ───────────────────────────────────────────────── */
 @keyframes shimmer {

@@ -9,16 +9,6 @@ export function Hero() {
         <div className="absolute right-[8%] top-[12%] h-[340px] w-[340px] rounded-full bg-lapis/[0.07] blur-[1px] animate-[hero-float_14s_ease-in-out_infinite]" />
         {/* Medium ring */}
         <div className="absolute right-[5%] top-[8%] h-[420px] w-[420px] rounded-full border border-lapis/[0.12] animate-[hero-float_18s_ease-in-out_infinite_reverse]" />
-        {/* Small accent dot */}
-        <div className="absolute right-[32%] top-[18%] h-3 w-3 rounded-full bg-lapis/30 animate-[hero-float_8s_ease-in-out_infinite]" />
-        {/* Tiny dot */}
-        <div className="absolute right-[12%] bottom-[25%] h-2 w-2 rounded-full bg-lapis/20 animate-[hero-float_10s_ease-in-out_infinite_1s]" />
-        {/* Stacked stone slabs — CSS only, matches logo */}
-        <div className="absolute right-[10%] top-[30%] flex flex-col gap-2 opacity-[0.08] animate-[hero-float_16s_ease-in-out_infinite]">
-          <div className="h-3 w-28 rounded-sm bg-lapis" />
-          <div className="ml-6 h-3 w-36 rounded-sm bg-lapis" />
-          <div className="ml-2 h-3 w-24 rounded-sm bg-lapis" />
-        </div>
       </div>
 
       <div className="relative z-10 mx-auto max-w-none px-6 py-20 lg:px-10 lg:py-28">

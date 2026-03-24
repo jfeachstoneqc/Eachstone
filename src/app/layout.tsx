@@ -11,12 +11,14 @@ const syne = localFont({
   src: "./fonts/syne-variable.woff2",
   variable: "--font-syne",
   weight: "100 900",
+  display: "swap",
 });
 
 const outfit = localFont({
   src: "./fonts/outfit-variable.woff2",
   variable: "--font-outfit",
   weight: "100 900",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
