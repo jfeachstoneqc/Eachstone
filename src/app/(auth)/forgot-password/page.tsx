@@ -2,39 +2,62 @@
 
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-export default function LoginPage() {
+export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
-  async function handleLogin(e: React.FormEvent) {
+  async function handleReset(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
     setError(null);
 
     const supabase = createClient();
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/auth/callback?next=/reset-password`,
     });
 
     if (error) {
-      setError("Courriel ou mot de passe invalide.");
+      setError("Une erreur est survenue. Veuillez réessayer.");
       setLoading(false);
       return;
     }
 
-    router.push("/dashboard");
-    router.refresh();
+    setSuccess(true);
+  }
+
+  if (success) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-ardoise/5 px-4">
+        <Card className="w-full max-w-sm">
+          <CardHeader className="text-center">
+            <CardTitle className="text-2xl font-semibold tracking-tight">
+              Courriel envoyé
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4 text-center">
+            <p className="text-sm text-muted-foreground">
+              Si un compte existe pour{" "}
+              <span className="font-medium text-foreground">{email}</span>,
+              vous recevrez un lien pour réinitialiser votre mot de passe.
+            </p>
+            <Link
+              href="/login"
+              className="text-sm underline underline-offset-4 text-muted-foreground hover:text-foreground"
+            >
+              Retour à la connexion
+            </Link>
+          </CardContent>
+        </Card>
+      </div>
+    );
   }
 
   return (
@@ -42,14 +65,14 @@ export default function LoginPage() {
       <Card className="w-full max-w-sm">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-semibold tracking-tight">
-            Eachstone
+            Mot de passe oublié
           </CardTitle>
           <p className="text-sm text-muted-foreground">
-            Connectez-vous à votre tableau de bord
+            Entrez votre courriel pour recevoir un lien de réinitialisation
           </p>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleLogin} className="space-y-4">
+          <form onSubmit={handleReset} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Courriel</Label>
               <Input
@@ -61,37 +84,18 @@ export default function LoginPage() {
                 required
               />
             </div>
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="password">Mot de passe</Label>
-                <Link
-                  href="/forgot-password"
-                  className="text-xs text-muted-foreground underline underline-offset-4 hover:text-foreground"
-                >
-                  Mot de passe oublié?
-                </Link>
-              </div>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
             {error && (
               <p className="text-sm text-destructive">{error}</p>
             )}
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Connexion..." : "Se connecter"}
+              {loading ? "Envoi..." : "Envoyer le lien"}
             </Button>
             <p className="text-center text-sm text-muted-foreground">
-              Pas encore de compte?{" "}
               <Link
-                href="/signup"
+                href="/login"
                 className="underline underline-offset-4 hover:text-foreground"
               >
-                Créer un compte
+                Retour à la connexion
               </Link>
             </p>
           </form>

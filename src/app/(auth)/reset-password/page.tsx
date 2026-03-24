@@ -3,32 +3,39 @@
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-export default function LoginPage() {
-  const [email, setEmail] = useState("");
+export default function ResetPasswordPage() {
   const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  async function handleLogin(e: React.FormEvent) {
+  async function handleUpdate(e: React.FormEvent) {
     e.preventDefault();
-    setLoading(true);
     setError(null);
 
+    if (password !== confirm) {
+      setError("Les mots de passe ne correspondent pas.");
+      return;
+    }
+
+    if (password.length < 8) {
+      setError("Le mot de passe doit contenir au moins 8 caractères.");
+      return;
+    }
+
+    setLoading(true);
+
     const supabase = createClient();
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    const { error } = await supabase.auth.updateUser({ password });
 
     if (error) {
-      setError("Courriel ou mot de passe invalide.");
+      setError("Impossible de mettre à jour le mot de passe. Le lien est peut-être expiré.");
       setLoading(false);
       return;
     }
@@ -42,40 +49,32 @@ export default function LoginPage() {
       <Card className="w-full max-w-sm">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-semibold tracking-tight">
-            Eachstone
+            Nouveau mot de passe
           </CardTitle>
           <p className="text-sm text-muted-foreground">
-            Connectez-vous à votre tableau de bord
+            Choisissez un nouveau mot de passe pour votre compte
           </p>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleLogin} className="space-y-4">
+          <form onSubmit={handleUpdate} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Courriel</Label>
+              <Label htmlFor="password">Nouveau mot de passe</Label>
               <Input
-                id="email"
-                type="email"
-                placeholder="admin@eachstone.ca"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                id="password"
+                type="password"
+                placeholder="8 caractères minimum"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 required
               />
             </div>
             <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="password">Mot de passe</Label>
-                <Link
-                  href="/forgot-password"
-                  className="text-xs text-muted-foreground underline underline-offset-4 hover:text-foreground"
-                >
-                  Mot de passe oublié?
-                </Link>
-              </div>
+              <Label htmlFor="confirm">Confirmer le mot de passe</Label>
               <Input
-                id="password"
+                id="confirm"
                 type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={confirm}
+                onChange={(e) => setConfirm(e.target.value)}
                 required
               />
             </div>
@@ -83,17 +82,8 @@ export default function LoginPage() {
               <p className="text-sm text-destructive">{error}</p>
             )}
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Connexion..." : "Se connecter"}
+              {loading ? "Mise à jour..." : "Mettre à jour le mot de passe"}
             </Button>
-            <p className="text-center text-sm text-muted-foreground">
-              Pas encore de compte?{" "}
-              <Link
-                href="/signup"
-                className="underline underline-offset-4 hover:text-foreground"
-              >
-                Créer un compte
-              </Link>
-            </p>
           </form>
         </CardContent>
       </Card>
