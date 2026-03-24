@@ -102,7 +102,7 @@ export function ContactForm() {
                       name="name"
                       required
                       placeholder="Votre nom"
-                      className="rounded-xl border border-black/12 bg-white/60 text-[#1c1410] placeholder:text-[#1c1410]/30 focus:border-cuivre/50 focus-visible:ring-0 focus-visible:ring-offset-0 backdrop-blur-sm"
+                      className="rounded-xl border border-black/12 bg-white/90 text-[#1c1410] placeholder:text-[#1c1410]/30 focus:border-cuivre/50 focus-visible:ring-0 focus-visible:ring-offset-0"
                     />
                   </div>
                   <div>
@@ -114,7 +114,7 @@ export function ContactForm() {
                       type="tel"
                       required
                       placeholder="(819) 000-0000"
-                      className="rounded-xl border border-black/12 bg-white/60 text-[#1c1410] placeholder:text-[#1c1410]/30 focus:border-cuivre/50 focus-visible:ring-0 focus-visible:ring-offset-0 backdrop-blur-sm"
+                      className="rounded-xl border border-black/12 bg-white/90 text-[#1c1410] placeholder:text-[#1c1410]/30 focus:border-cuivre/50 focus-visible:ring-0 focus-visible:ring-offset-0"
                     />
                   </div>
                   <div>
@@ -125,7 +125,7 @@ export function ContactForm() {
                       name="email"
                       type="email"
                       placeholder="votre@courriel.ca"
-                      className="rounded-xl border border-black/12 bg-white/60 text-[#1c1410] placeholder:text-[#1c1410]/30 focus:border-cuivre/50 focus-visible:ring-0 focus-visible:ring-offset-0 backdrop-blur-sm"
+                      className="rounded-xl border border-black/12 bg-white/90 text-[#1c1410] placeholder:text-[#1c1410]/30 focus:border-cuivre/50 focus-visible:ring-0 focus-visible:ring-offset-0"
                     />
                   </div>
                 </div>
@@ -135,10 +135,10 @@ export function ContactForm() {
                     Type de service
                   </label>
                   <Select name="service_type">
-                    <SelectTrigger className="rounded-xl border border-black/12 bg-white/60 text-[#1c1410]/65 focus:border-cuivre/50 focus:ring-0 backdrop-blur-sm">
+                    <SelectTrigger className="rounded-xl border border-black/12 bg-white/90 text-[#1c1410]/65 focus:border-cuivre/50 focus:ring-0">
                       <SelectValue placeholder="Choisir un service" />
                     </SelectTrigger>
-                    <SelectContent className="rounded-xl border border-black/12 bg-white/95 backdrop-blur-xl text-[#1c1410]">
+                    <SelectContent className="rounded-xl border border-black/12 bg-white text-[#1c1410]">
                       {SERVICE_CATEGORIES.map((s) => (
                         <SelectItem key={s.name} value={s.name} className="focus:bg-black/4 focus:text-[#1c1410]">
                           {s.name}
@@ -156,7 +156,7 @@ export function ContactForm() {
                     name="message"
                     rows={4}
                     placeholder="Décrivez le travail que vous aimeriez faire..."
-                    className="rounded-xl border border-black/12 bg-white/60 text-[#1c1410] placeholder:text-[#1c1410]/30 focus:border-cuivre/50 focus-visible:ring-0 focus-visible:ring-offset-0 resize-none backdrop-blur-sm"
+                    className="rounded-xl border border-black/12 bg-white/90 text-[#1c1410] placeholder:text-[#1c1410]/30 focus:border-cuivre/50 focus-visible:ring-0 focus-visible:ring-offset-0 resize-none"
                   />
                 </div>
 

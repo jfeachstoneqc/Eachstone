@@ -72,7 +72,7 @@ export function Hero() {
               ].map(({ icon: Icon, label }) => (
                 <span
                   key={label}
-                  className="inline-flex items-center gap-1.5 rounded-full border border-black/10 bg-white/50 px-3 py-1.5 font-[family-name:var(--font-outfit)] text-xs font-medium text-[#1c1410]/55 backdrop-blur-md"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-black/10 bg-white/80 px-3 py-1.5 font-[family-name:var(--font-outfit)] text-xs font-medium text-[#1c1410]/55"
                 >
                   <Icon className="h-3.5 w-3.5 text-cuivre" />
                   {label}

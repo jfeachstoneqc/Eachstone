@@ -12,10 +12,12 @@ import { Footer } from "@/components/shared/footer";
 export default function Home() {
   return (
     <div className="page-bg grain">
-      {/* Floating decorative blobs — ambient color movement */}
-      <div className="deco-blob deco-blob-1" />
-      <div className="deco-blob deco-blob-2" />
-      <div className="deco-blob deco-blob-3" />
+      {/* Floating decorative blobs — desktop only, too expensive for mobile GPUs */}
+      <div className="hidden lg:block">
+        <div className="deco-blob deco-blob-1" />
+        <div className="deco-blob deco-blob-2" />
+        <div className="deco-blob deco-blob-3" />
+      </div>
 
       <Navbar />
       <main>

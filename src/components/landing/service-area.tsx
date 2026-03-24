@@ -15,7 +15,7 @@ export function ServiceArea() {
             {SERVICE_AREAS.map((area) => (
               <span
                 key={area}
-                className="border border-black/10 bg-white/50 text-[#1c1410]/55 backdrop-blur-sm rounded-full px-3 py-1 font-[family-name:var(--font-outfit)] text-xs font-medium"
+                className="border border-black/10 bg-white/80 text-[#1c1410]/55 rounded-full px-3 py-1 font-[family-name:var(--font-outfit)] text-xs font-medium"
               >
                 {area}
               </span>
