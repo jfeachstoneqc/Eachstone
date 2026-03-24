@@ -17,7 +17,7 @@ export async function createClientAction(
 
   const { error } = await supabase.from("clients").insert({
     name: name.trim(),
-    phone: (formData.get("phone") as string | null) ?? null,
+    phone: (formData.get("phone") as string) || "",
     email: (formData.get("email") as string | null) ?? null,
     address: (formData.get("address") as string | null) ?? null,
     city: (formData.get("city") as string | null) ?? "Trois-Rivières",
