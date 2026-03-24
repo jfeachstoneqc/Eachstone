@@ -76,6 +76,10 @@ enable_confirmations = true
 # Controls the minimum amount of time that must pass before sending another signup confirmation or password reset email.
 max_frequency = "1s"
 
+[auth.email.template.confirmation]
+subject = "Confirmez votre inscription à Eachstone"
+content_path = "./supabase/templates/confirmation.html"
+
 [auth.sms]
 enable_signup = false
 enable_confirmations = false
