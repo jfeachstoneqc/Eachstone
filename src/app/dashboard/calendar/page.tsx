@@ -1,16 +1,50 @@
+import { createClient } from "@/lib/supabase/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Calendar as CalendarIcon } from "lucide-react";
+import Link from "next/link";
+import { JOB_STATUS_LABELS, type JobStatus } from "@/lib/constants";
 
-// Simple calendar placeholder — will integrate a proper calendar library later
-export default function CalendarPage() {
-  const upcomingJobs = [
-    { date: "2026-03-24", title: "Peinture salon", client: "Sophie Bergeron", time: "9h00" },
-    { date: "2026-03-25", title: "Installation tablettes", client: "Jean Lavoie", time: "13h00" },
-    { date: "2026-03-26", title: "Réparation clôture", client: "Luc Fortin", time: "8h30" },
-    { date: "2026-03-28", title: "Peinture chambre", client: "Anne Gagnon", time: "10h00" },
-    { date: "2026-03-31", title: "Pose céramique", client: "Pierre Bouchard", time: "8h00" },
-  ];
+const statusVariant: Record<JobStatus, "default" | "secondary" | "outline" | "destructive"> = {
+  pending: "outline",
+  scheduled: "outline",
+  in_progress: "secondary",
+  completed: "default",
+  cancelled: "destructive",
+};
+
+export default async function CalendarPage() {
+  const supabase = await createClient();
+
+  const { data: jobsData } = await supabase
+    .from("jobs")
+    .select("id, title, scheduled_date, status, clients(name)")
+    .in("status", ["pending", "scheduled", "in_progress"])
+    .not("scheduled_date", "is", null)
+    .order("scheduled_date", { ascending: true })
+    .limit(30);
+
+  type ScheduledJob = {
+    id: string;
+    title: string;
+    scheduled_date: string;
+    status: JobStatus;
+    clientName: string;
+  };
+
+  const jobs: ScheduledJob[] = (jobsData ?? []).map((j) => {
+    const clientRaw = j.clients;
+    const clientName = Array.isArray(clientRaw)
+      ? ((clientRaw[0] as { name?: string })?.name ?? "—")
+      : ((clientRaw as { name?: string } | null)?.name ?? "—");
+    return {
+      id: j.id,
+      title: j.title,
+      scheduled_date: j.scheduled_date as string,
+      status: (j.status as JobStatus) ?? "pending",
+      clientName,
+    };
+  });
 
   return (
     <div className="space-y-6">
@@ -24,36 +58,43 @@ export default function CalendarPage() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-3">
-            {upcomingJobs.map((job, i) => (
-              <div
-                key={i}
-                className="flex items-center justify-between rounded-lg border px-4 py-3"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="text-center">
-                    <p className="font-mono text-xs text-muted-foreground">
-                      {new Date(job.date).toLocaleDateString("fr-CA", {
-                        weekday: "short",
-                      })}
-                    </p>
-                    <p className="font-mono text-lg font-semibold tabular-nums">
-                      {new Date(job.date).getDate()}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium">{job.title}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {job.client}
-                    </p>
-                  </div>
-                </div>
-                <Badge variant="outline" className="font-mono">
-                  {job.time}
-                </Badge>
-              </div>
-            ))}
-          </div>
+          {jobs.length === 0 ? (
+            <p className="text-sm text-muted-foreground text-center py-6">
+              Aucun travail planifié.
+            </p>
+          ) : (
+            <div className="space-y-3">
+              {jobs.map((job) => {
+                const d = new Date(job.scheduled_date + "T00:00:00");
+                return (
+                  <Link key={job.id} href={`/dashboard/jobs/${job.id}`}>
+                    <div className="flex items-center justify-between rounded-lg border px-4 py-3 hover:bg-accent/50 transition-colors">
+                      <div className="flex items-center gap-4">
+                        <div className="text-center w-10">
+                          <p className="font-mono text-xs text-muted-foreground capitalize">
+                            {d.toLocaleDateString("fr-CA", { weekday: "short" })}
+                          </p>
+                          <p className="font-mono text-lg font-semibold tabular-nums leading-tight">
+                            {d.getDate()}
+                          </p>
+                          <p className="font-mono text-xs text-muted-foreground">
+                            {d.toLocaleDateString("fr-CA", { month: "short" })}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium">{job.title}</p>
+                          <p className="text-xs text-muted-foreground">{job.clientName}</p>
+                        </div>
+                      </div>
+                      <Badge variant={statusVariant[job.status]}>
+                        {JOB_STATUS_LABELS[job.status]}
+                      </Badge>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

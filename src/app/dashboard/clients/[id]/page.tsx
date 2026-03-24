@@ -2,25 +2,22 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { ArrowLeft, Plus, Phone, Mail, MapPin } from "lucide-react";
+import { ArrowLeft, Phone, Mail, MapPin } from "lucide-react";
 import Link from "next/link";
+import { createClient } from "@/lib/supabase/server";
 
-// Mock data — will be replaced with Supabase query
-const mockClient = {
-  id: "1",
-  name: "Marie-Claude Tremblay",
-  phone: "(819) 555-1234",
-  email: "marie@email.ca",
-  address: "123 rue Laviolette",
-  city: "Trois-Rivières",
-  status: "active",
-  source: "referral",
-  notes: "Très bonne cliente, toujours ponctuelle pour les paiements.",
-  jobs: [
-    { id: "j1", title: "Peinture cuisine", date: "2026-03-15", amount: 450, status: "completed" },
-    { id: "j2", title: "Réparation robinet", date: "2026-02-20", amount: 185, status: "completed" },
-    { id: "j3", title: "Installation tablettes", date: "2026-01-10", amount: 320, status: "completed" },
-  ],
+const statusBadge: Record<string, { label: string; variant: "default" | "secondary" | "outline" }> = {
+  active: { label: "Actif", variant: "default" },
+  inactive: { label: "Inactif", variant: "secondary" },
+  lead: { label: "Lead", variant: "outline" },
+};
+
+const jobStatusBadge: Record<string, { label: string; variant: "default" | "secondary" | "outline" | "destructive" }> = {
+  completed: { label: "Complété", variant: "default" },
+  in_progress: { label: "En cours", variant: "secondary" },
+  scheduled: { label: "Planifié", variant: "outline" },
+  pending: { label: "En attente", variant: "outline" },
+  cancelled: { label: "Annulé", variant: "destructive" },
 };
 
 export default async function ClientDetailPage({
@@ -29,8 +26,43 @@ export default async function ClientDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  // TODO: fetch client by id from Supabase
-  void id;
+  const supabase = await createClient();
+
+  const { data: client } = await supabase
+    .from("clients")
+    .select("*")
+    .eq("id", id)
+    .single();
+
+  if (!client) {
+    return (
+      <div className="flex items-center gap-4">
+        <Button asChild variant="ghost" size="icon">
+          <Link href="/dashboard/clients">
+            <ArrowLeft className="h-4 w-4" />
+          </Link>
+        </Button>
+        <p className="text-muted-foreground">Client introuvable.</p>
+      </div>
+    );
+  }
+
+  const { data: jobsData } = await supabase
+    .from("jobs")
+    .select("id, title, scheduled_date, total_amount, status")
+    .eq("client_id", id)
+    .order("created_at", { ascending: false });
+
+  const jobs = jobsData ?? [];
+  const clientStatus = client.status ?? "active";
+  const badge = statusBadge[clientStatus] ?? statusBadge.active;
+
+  const sourceLabels: Record<string, string> = {
+    referral: "Référence",
+    facebook: "Facebook",
+    website: "Site web",
+    "walk-in": "Sans rendez-vous",
+  };
 
   return (
     <div className="space-y-6">
@@ -43,19 +75,17 @@ export default async function ClientDetailPage({
         </Button>
         <div className="flex-1">
           <h1 className="text-2xl font-semibold tracking-tight">
-            {mockClient.name}
+            {client.name}
           </h1>
           <div className="flex items-center gap-2 mt-1">
-            <Badge variant="default">Actif</Badge>
-            <span className="text-sm text-muted-foreground">
-              Source: Référence
-            </span>
+            <Badge variant={badge.variant}>{badge.label}</Badge>
+            {client.source && (
+              <span className="text-sm text-muted-foreground">
+                Source: {sourceLabels[client.source] ?? client.source}
+              </span>
+            )}
           </div>
         </div>
-        <Button size="sm" className="gap-2">
-          <Plus className="h-4 w-4" />
-          Nouveau travail
-        </Button>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
@@ -65,23 +95,33 @@ export default async function ClientDetailPage({
             <CardTitle className="text-sm font-medium">Contact</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            <div className="flex items-center gap-2 text-sm">
-              <Phone className="h-4 w-4 text-muted-foreground" />
-              <span className="font-mono">{mockClient.phone}</span>
-            </div>
-            <div className="flex items-center gap-2 text-sm">
-              <Mail className="h-4 w-4 text-muted-foreground" />
-              {mockClient.email}
-            </div>
-            <div className="flex items-center gap-2 text-sm">
-              <MapPin className="h-4 w-4 text-muted-foreground" />
-              {mockClient.address}, {mockClient.city}
-            </div>
-            <Separator />
-            <div>
-              <p className="text-xs text-muted-foreground mb-1">Notes</p>
-              <p className="text-sm">{mockClient.notes}</p>
-            </div>
+            {client.phone && (
+              <div className="flex items-center gap-2 text-sm">
+                <Phone className="h-4 w-4 text-muted-foreground" />
+                <span className="font-mono">{client.phone}</span>
+              </div>
+            )}
+            {client.email && (
+              <div className="flex items-center gap-2 text-sm">
+                <Mail className="h-4 w-4 text-muted-foreground" />
+                {client.email}
+              </div>
+            )}
+            {(client.address || client.city) && (
+              <div className="flex items-center gap-2 text-sm">
+                <MapPin className="h-4 w-4 text-muted-foreground" />
+                {[client.address, client.city].filter(Boolean).join(", ")}
+              </div>
+            )}
+            {client.notes && (
+              <>
+                <Separator />
+                <div>
+                  <p className="text-xs text-muted-foreground mb-1">Notes</p>
+                  <p className="text-sm">{client.notes}</p>
+                </div>
+              </>
+            )}
           </CardContent>
         </Card>
 
@@ -93,27 +133,36 @@ export default async function ClientDetailPage({
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-3">
-              {mockClient.jobs.map((job) => (
-                <div
-                  key={job.id}
-                  className="flex items-center justify-between rounded-lg border px-4 py-3"
-                >
-                  <div>
-                    <p className="text-sm font-medium">{job.title}</p>
-                    <p className="text-xs text-muted-foreground font-mono">
-                      {job.date}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Badge variant="default">Complété</Badge>
-                    <span className="text-sm font-mono tabular-nums">
-                      {job.amount} $
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
+            {jobs.length === 0 ? (
+              <p className="text-sm text-muted-foreground text-center py-4">
+                Aucun travail pour ce client
+              </p>
+            ) : (
+              <div className="space-y-3">
+                {jobs.map((job) => {
+                  const jbadge = jobStatusBadge[job.status] ?? jobStatusBadge.pending;
+                  return (
+                    <div
+                      key={job.id}
+                      className="flex items-center justify-between rounded-lg border px-4 py-3"
+                    >
+                      <div>
+                        <p className="text-sm font-medium">{job.title}</p>
+                        <p className="text-xs text-muted-foreground font-mono">
+                          {job.scheduled_date ?? "—"}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <Badge variant={jbadge.variant}>{jbadge.label}</Badge>
+                        <span className="text-sm font-mono tabular-nums">
+                          {job.total_amount != null ? `${job.total_amount} $` : "—"}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
