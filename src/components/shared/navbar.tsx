@@ -30,7 +30,7 @@ export function Navbar() {
   }, []);
 
   return (
-    <header ref={headerRef} className="landing sticky top-0 z-50 border-b border-black/8 bg-white/95 lg:bg-white/65 lg:backdrop-blur-md">
+    <header ref={headerRef} className="landing sticky top-0 z-50 border-b border-black/8 bg-white lg:bg-white/65 lg:backdrop-blur-md">
       <div className="mx-auto flex h-14 max-w-none items-center justify-between px-6 lg:px-10">
         {/* Logo */}
         <a href="/" className="text-[#1c1410]">

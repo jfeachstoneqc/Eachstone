@@ -17,6 +17,12 @@ export function ScrollReveal({ children, className, stagger }: ScrollRevealProps
     const el = ref.current;
     if (!el) return;
 
+    // Sur mobile, le CSS rend tout visible immédiatement — pas besoin d'observer
+    if (window.matchMedia("(max-width: 1023px)").matches) {
+      el.classList.add("revealed");
+      return;
+    }
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {

@@ -221,6 +221,14 @@
   animation-play-state: paused;
 }
 
+/* Sur petit mobile — ralentir le marquee, retirer will-change */
+@media (max-width: 639px) {
+  .marquee-track {
+    animation-duration: 40s;
+    will-change: auto;
+  }
+}
+
 /* ── Glassmorphism utilities — light / off-white theme ───────────────────── */
 /* Base glass — nav, subtle overlays */
 .glass {
@@ -398,17 +406,80 @@
   color: var(--color-copper);
 }
 
-/* ── Mobile performance — disable expensive effects on small screens ─────── */
+/* ── Mobile performance — optimisations agressives pour appareils bas de gamme */
 @media (max-width: 1023px) {
-  /* Stop blob animations (GPU-expensive filter: blur) */
+  /* Cacher les blobs entièrement — filter: blur coûte même sans animation */
   .deco-blob {
-    animation: none;
+    display: none;
   }
-  /* Remove glass CSS backdrop-filter on mobile (class-based) */
-  .glass, .glass-card, .glass-strong, .glass-copper {
+
+  /* Supprimer dot grid — position: fixed cause un repaint à chaque scroll */
+  .page-bg::after {
+    display: none;
+  }
+
+  /* Supprimer le grain — même raison */
+  .grain::before {
+    display: none;
+  }
+
+  /* Supprimer TOUS les backdrop-filter — GPU trop lent sur mobile */
+  .glass,
+  .glass-card,
+  .glass-strong,
+  .glass-copper {
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
-    background: rgba(255,255,255,0.95);
+    background: rgba(255, 255, 255, 0.97);
+  }
+
+  /* Désactiver l'effet hover glass (parfois déclenché au tap) */
+  .glass-hover:hover {
+    transform: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: rgba(255, 255, 255, 0.97);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
+  }
+
+  /* Simplifier les ombres — une seule couche */
+  .glass-card,
+  .glass-strong {
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
+  }
+
+  /* Désactiver shimmer — pas de hover sur écran tactile */
+  .glass-shimmer::after {
+    display: none;
+  }
+
+  /* Retirer will-change — évite la création de layers GPU excédentaires */
+  .marquee-track {
+    will-change: auto;
+  }
+
+  /* Afficher les cartes anim-in immédiatement — pas d'attente au chargement */
+  .anim-in,
+  .anim-in-2,
+  .anim-in-3 {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* Scroll-reveal — visible immédiatement sans attendre le JS ni l'intersection */
+  .reveal,
+  .reveal.revealed {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .reveal-stagger > *,
+  .reveal-stagger.revealed > * {
+    opacity: 1;
+    transform: none;
+    transition: none;
   }
 }
 
