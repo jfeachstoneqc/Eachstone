@@ -7,9 +7,20 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: "Geist", "Geist Fallback", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono", "Geist Mono Fallback", ui-monospace, monospace;
   --font-heading: var(--font-sans);
+  --font-syne: var(--font-syne);
+  --font-outfit: var(--font-outfit);
+
+  /* Eachstone brand colors — lapis blue */
+  --color-lapis: #2546BD;
+  --color-lapis-light: #4A6AE0;
+  --color-lapis-dark: #1B3490;
+  --color-ardoise: #4A5568;
+  --color-foret: #2D5016;
+  --color-cuivre: #2546BD;
+  --color-creme: #f8f9fc;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -126,5 +137,278 @@
   }
   html {
     @apply font-sans;
+    scroll-behavior: smooth;
   }
+}
+
+/* ── Page background — textured off-white with bold gradient blobs ────────── */
+.page-bg {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 80% 65% at 110% -5%, #c8d8ff 0%, transparent 55%),
+    radial-gradient(ellipse 60% 55% at -10% 105%, #d0daf4 0%, transparent 50%),
+    radial-gradient(ellipse 55% 50% at 0%  0%,   #e4ecff 0%, transparent 48%),
+    radial-gradient(ellipse 45% 40% at 100% 100%, #ccd6ef 0%, transparent 48%),
+    radial-gradient(ellipse 35% 30% at 50%  50%,  #eef1fa 0%, transparent 55%),
+    #f4f5fa;
+  background-attachment: fixed;
+}
+
+/* isolate ensures negative z-index children stay inside this context */
+.page-bg { isolation: isolate; }
+
+/* ── Dot grid overlay — adds "dirty" tactile texture ────────────────────── */
+.page-bg::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(circle 1px, rgba(37,70,189,0.07) 1px, transparent 1px);
+  background-size: 24px 24px;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* ── Floating decorative blobs — slow ambient movement ───────────────────── */
+@keyframes float-blob {
+  0%,100% { transform: translate(0,0) scale(1); }
+  33%     { transform: translate(30px,-20px) scale(1.05); }
+  66%     { transform: translate(-15px,15px) scale(0.97); }
+}
+.deco-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.35;
+  pointer-events: none;
+  z-index: -1;
+  animation: float-blob 18s ease-in-out infinite;
+}
+.deco-blob-1 {
+  width: 400px; height: 400px;
+  background: #b8ccff;
+  top: 10%; left: -8%;
+  animation-delay: 0s;
+}
+.deco-blob-2 {
+  width: 300px; height: 300px;
+  background: #c4b8ff;
+  top: 55%; right: -6%;
+  animation-delay: -6s;
+}
+.deco-blob-3 {
+  width: 250px; height: 250px;
+  background: #a8d8ff;
+  bottom: 15%; left: 30%;
+  animation-delay: -12s;
+}
+
+/* ── Hero floating shapes ──────────────────────────────────────────────── */
+@keyframes hero-float {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50%      { transform: translateY(-18px) scale(1.02); }
+}
+
+/* ── Marquee ticker ──────────────────────────────────────────────────────── */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 30s linear infinite;
+}
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+/* ── Glassmorphism utilities — light / off-white theme ───────────────────── */
+/* Base glass — nav, subtle overlays */
+.glass {
+  background: rgba(255,255,255,0.55);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid rgba(255,255,255,0.80);
+}
+
+/* Standard glass card — workhorse */
+.glass-card {
+  background: rgba(255,255,255,0.68);
+  backdrop-filter: blur(28px) saturate(170%);
+  -webkit-backdrop-filter: blur(28px) saturate(170%);
+  border: 1px solid rgba(255,255,255,0.88);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.95) inset,
+    0 8px 32px rgba(37,70,189,0.08),
+    0 2px 8px rgba(0,0,0,0.06);
+}
+
+/* Heavy glass — info panels, prominent cards */
+.glass-strong {
+  background: rgba(255,255,255,0.80);
+  backdrop-filter: blur(40px) saturate(190%);
+  -webkit-backdrop-filter: blur(40px) saturate(190%);
+  border: 1px solid rgba(255,255,255,0.95);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,1) inset,
+    0 12px 40px rgba(37,70,189,0.10),
+    0 2px 12px rgba(0,0,0,0.07);
+}
+
+/* Lapis-tinted glass */
+.glass-copper {
+  background: rgba(37,70,189,0.06);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid rgba(37,70,189,0.20);
+  box-shadow: 0 4px 24px rgba(37,70,189,0.08);
+}
+
+/* Hover — lift + deepen frost */
+.glass-hover {
+  transition: background 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease, transform 0.2s ease;
+}
+.glass-hover:hover {
+  background: rgba(255,255,255,0.88);
+  border-color: rgba(255,255,255,1);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,1) inset,
+    0 16px 48px rgba(37,70,189,0.13),
+    0 4px 16px rgba(0,0,0,0.08);
+  transform: translateY(-3px);
+}
+
+/* ── Entrance animations ──────────────────────────────────────────────────── */
+@keyframes glass-fade-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.anim-in   { animation: glass-fade-up 0.6s cubic-bezier(0.16,1,0.3,1) forwards; }
+.anim-in-2 { animation: glass-fade-up 0.6s 0.1s cubic-bezier(0.16,1,0.3,1) both; }
+.anim-in-3 { animation: glass-fade-up 0.6s 0.2s cubic-bezier(0.16,1,0.3,1) both; }
+
+/* ── Scroll-reveal ───────────────────────────────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1);
+}
+.reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Stagger children inside a reveal container */
+.reveal-stagger > * {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s cubic-bezier(0.16,1,0.3,1), transform 0.5s cubic-bezier(0.16,1,0.3,1);
+}
+.reveal-stagger.revealed > *:nth-child(1) { transition-delay: 0s;    opacity: 1; transform: translateY(0); }
+.reveal-stagger.revealed > *:nth-child(2) { transition-delay: 0.08s; opacity: 1; transform: translateY(0); }
+.reveal-stagger.revealed > *:nth-child(3) { transition-delay: 0.16s; opacity: 1; transform: translateY(0); }
+.reveal-stagger.revealed > *:nth-child(4) { transition-delay: 0.24s; opacity: 1; transform: translateY(0); }
+.reveal-stagger.revealed > *:nth-child(5) { transition-delay: 0.32s; opacity: 1; transform: translateY(0); }
+.reveal-stagger.revealed > *:nth-child(6) { transition-delay: 0.40s; opacity: 1; transform: translateY(0); }
+.reveal-stagger.revealed > *:nth-child(7) { transition-delay: 0.48s; opacity: 1; transform: translateY(0); }
+
+/* ── Hero stagger — plays on load ────────────────────────────────────────── */
+@keyframes hero-in {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.hero-stagger > *:nth-child(1) { animation: hero-in 0.7s 0.1s  cubic-bezier(0.16,1,0.3,1) both; }
+.hero-stagger > *:nth-child(2) { animation: hero-in 0.7s 0.25s cubic-bezier(0.16,1,0.3,1) both; }
+.hero-stagger > *:nth-child(3) { animation: hero-in 0.7s 0.4s  cubic-bezier(0.16,1,0.3,1) both; }
+.hero-stagger > *:nth-child(4) { animation: hero-in 0.7s 0.55s cubic-bezier(0.16,1,0.3,1) both; }
+.hero-stagger > *:nth-child(5) { animation: hero-in 0.7s 0.65s cubic-bezier(0.16,1,0.3,1) both; }
+
+/* ── Card shimmer on hover ───────────────────────────────────────────────── */
+@keyframes shimmer {
+  from { transform: translateX(-100%) skewX(-15deg); }
+  to   { transform: translateX(200%) skewX(-15deg); }
+}
+.glass-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.glass-shimmer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.5) 50%, transparent 60%);
+  transform: translateX(-100%) skewX(-15deg);
+  pointer-events: none;
+  transition: none;
+}
+.glass-shimmer:hover::after {
+  animation: shimmer 0.6s ease forwards;
+}
+
+/* ── Animated background drift ───────────────────────────────────────────── */
+@keyframes bg-drift {
+  0%,100% { background-position: 0% 0%, 100% 100%, 0% 0%, 100% 100%, 0 0; }
+  50%     { background-position: 5% 3%, 95% 97%, 3% 5%, 97% 95%, 0 0; }
+}
+.page-bg {
+  animation: bg-drift 20s ease-in-out infinite;
+  overflow: hidden;
+}
+
+/* ── Navbar scroll state (toggled by JS) ─────────────────────────────────── */
+.nav-scrolled {
+  background: rgba(255,255,255,0.82) !important;
+  box-shadow: 0 1px 12px rgba(37,70,189,0.06);
+}
+
+/* ── Geotextile — grain/noise texture overlay ─────────────────────────────── */
+.grain {
+  position: relative;
+  isolation: isolate;
+}
+.grain::before {
+  content: '';
+  position: absolute;
+  inset: -50%;
+  width: 200%;
+  height: 200%;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='512' height='512' filter='url(%23g)'/%3E%3C/svg%3E");
+}
+/* grain children don't need z-index override — isolation handles stacking */
+
+/* ── Brutalist landing — design tokens ────────────────────────────────────── */
+.landing {
+  --border-w: 2px;
+  --color-ink: #0a0a0a;
+  --color-copper: #2546BD;
+}
+
+/* Heavy rule separator */
+.rule-heavy {
+  border-top: var(--border-w) solid var(--color-ink);
+}
+
+/* Glass hover row — light theme */
+.service-row {
+  transition: background 0.15s ease, padding-left 0.15s ease;
+}
+.service-row:hover {
+  background: rgba(255,255,255,0.65);
+  padding-left: calc(theme(spacing.8) + 4px);
+}
+.service-row:hover .row-num {
+  color: var(--color-copper);
+}
+.service-row:hover .row-arrow {
+  transform: translateX(4px);
+  color: var(--color-copper);
+}
+
+.row-arrow {
+  transition: transform 0.12s ease, color 0.12s ease;
 }
