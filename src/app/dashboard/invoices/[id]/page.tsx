@@ -2,10 +2,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { ArrowLeft, Printer } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { TPS_RATE, TVQ_RATE, INVOICE_STATUS_LABELS, type InvoiceStatus } from "@/lib/constants";
+import { PrintButton } from "@/components/dashboard/print-button";
 
 const statusVariant: Record<
   InvoiceStatus,
@@ -84,10 +85,7 @@ export default async function InvoiceDetailPage({
           <Badge variant={statusVariant[invoiceStatus]}>
             {INVOICE_STATUS_LABELS[invoiceStatus]}
           </Badge>
-          <Button variant="outline" size="sm" className="gap-2" onClick={undefined}>
-            <Printer className="h-4 w-4" />
-            Imprimer
-          </Button>
+          <PrintButton />
         </div>
       </div>
 

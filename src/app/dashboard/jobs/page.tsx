@@ -4,10 +4,17 @@ import { JobsView, type JobRow } from "@/components/dashboard/jobs-view";
 export default async function JobsPage() {
   const supabase = await createClient();
 
-  const { data: jobsData } = await supabase
-    .from("jobs")
-    .select("id, title, status, priority, total_amount, scheduled_date, clients(name)")
-    .order("created_at", { ascending: false });
+  const [{ data: jobsData }, { data: clientsData }] = await Promise.all([
+    supabase
+      .from("jobs")
+      .select("id, title, status, priority, total_amount, scheduled_date, clients(name)")
+      .order("created_at", { ascending: false }),
+    supabase
+      .from("clients")
+      .select("id, name")
+      .eq("status", "active")
+      .order("name", { ascending: true }),
+  ]);
 
   const jobs: JobRow[] = (jobsData ?? []).map((j) => ({
     id: j.id,
@@ -21,5 +28,7 @@ export default async function JobsPage() {
       : (j.clients as { name: string } | null),
   }));
 
-  return <JobsView initialJobs={jobs} />;
+  const clients = (clientsData ?? []).map((c) => ({ id: c.id, name: c.name }));
+
+  return <JobsView initialJobs={jobs} clients={clients} />;
 }
